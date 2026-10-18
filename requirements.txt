@@ -1,0 +1,8 @@
+# Versiones con las que se generaron los resultados del documento (Python 3.12).
+numpy==2.4.4
+pandas==3.0.2
+scikit-learn==1.8.0
+joblib==1.5.3
+matplotlib==3.10.8
+# Interfaz web (despliegue en Streamlit Community Cloud)
+streamlit==1.66.0

@@ -1,0 +1,25 @@
+digraph G {
+  rankdir=LR; fontname="DejaVu Sans"; node [shape=box, style="rounded,filled", fontname="DejaVu Sans", fontsize=10, fillcolor="#E8EEF7", color="#34495E"]; edge [fontname="DejaVu Sans", fontsize=8, color="#34495E"];
+  subgraph cluster_ext { label="Entorno / servicios externos (simulados en simulator.py)"; style="dashed"; fontsize=10;
+    prog [label="Sistema de programación\nde vuelos", fillcolor="#FDEBD0"];
+    wx [label="Servicio meteorológico\n(pronóstico)", fillcolor="#FDEBD0"];
+    ops [label="Sistema operativo aerolínea\n(OperationsSystemStub)", fillcolor="#FDEBD0"];
+    hist [label="Historial de vuelos\n(simulado; sustituto de BTS)", fillcolor="#FDEBD0"];
+  }
+  subgraph cluster_ag { label="FlightPredict-Agent (src/flightpredict)"; style="solid"; fontsize=10;
+    plan [label="Planificación\nagent.trigger_time / PLAN"];
+    per [label="Percepción\nperception.py"];
+    mem [label="Memoria\nmemory.py\n(corto y largo plazo)", fillcolor="#E9F7EF"];
+    dec [label="Decisión\nmodel.py + decision.py\n(ML + utilidad)", fillcolor="#FCF3CF"];
+    act [label="Acción\nactuators.py"];
+    com [label="Comunicación\n(alerta estructurada)"];
+    lrn [label="Aprendizaje\nagent.retrain()", fillcolor="#E9F7EF"];
+    log [label="Registro (log)\nlogger.py", fillcolor="#EAECEE"];
+  }
+  prog -> plan [label="vuelo programado"]; plan -> per [label="registro crudo"]; wx -> per [label="pronóstico"];
+  per -> mem [dir=both, label="estado aeronave /\nclimatología"]; per -> dec [label="características"];
+  mem -> dec [label="historial"]; hist -> mem [label="entrenamiento inicial"];
+  dec -> act [label="ALERTAR / NO_ALERTAR"]; per -> act [label="entrada inválida →\nrevisión manual", style=dashed];
+  act -> com; com -> ops [label="alerta + sugerencia"]; ops -> lrn [label="resultado real"]; lrn -> mem [label="retroalimentación"]; lrn -> dec [label="modelo reentrenado"];
+  per -> log [style=dotted]; dec -> log [style=dotted]; act -> log [style=dotted];
+}

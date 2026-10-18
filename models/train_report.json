@@ -1,0 +1,9 @@
+{
+  "n_historial": 31984,
+  "tasa_retraso_historial": 0.2012568784392196,
+  "n_validacion": 7979,
+  "tasa_retraso_validacion": 0.2030329615240005,
+  "accuracy_validacion": 0.7706479508710364,
+  "recall_validacion": 0.39197530864197533,
+  "precision_validacion": 0.42905405405405406
+}

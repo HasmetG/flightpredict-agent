@@ -1,0 +1,52 @@
+sequenceDiagram
+    autonumber
+    actor Ops as Equipo de operaciones
+    participant Env as Entorno (simulator.py: vuelos, clima, resultados)
+    participant SOA as Sistema operativo aerolínea (simulado)
+    participant Plan as Planificador (agent.trigger_time)
+    participant Per as Percepción (perception.py)
+    participant Mem as Memoria (memory.py)
+    participant Dec as Decisión (model.py + decision.py)
+    participant Act as Acción (actuators.py)
+    participant Met as Servicio meteorológico (pronóstico)
+
+    loop Por cada vuelo programado
+        Env->>SOA: vuelo programado (id, aeronave, origen, destino, salida)
+        SOA->>Plan: registro del vuelo
+        Plan-->>Plan: activar a salida - 180 min
+        Plan->>Met: solicitar pronóstico (origen, hora)
+        Met-->>Plan: vis, viento, precip, temp (o sin dato)
+        Plan->>Per: registro crudo (percepción)
+        Per->>Per: validar campos, antelación, rangos
+        alt Escenario típico: entrada válida y antelación >= 180 min
+            Per->>Mem: consultar estado de la aeronave
+            Mem-->>Per: último retraso conocido, ¿es el tramo previo?
+            Per->>Dec: percepto + características
+            Dec->>Dec: P(retraso) y duración esperada (modelo ML)
+            Dec->>Dec: U(alertar) = P·BETA·d - (1-P)·C_FA
+            alt U(alertar) > 0
+                Dec->>Act: ALERTAR + sugerencia
+                Act->>SOA: alerta estructurada y sugerencia de reasignación
+                SOA-->>Ops: notificación del riesgo de retraso
+            else U(alertar) <= 0
+                Dec->>Act: NO_ALERTAR
+                Act-->>SOA: sin mensaje (queda en el log)
+            end
+        else Excepción: pronóstico ausente o inválido
+            Per->>Mem: climatología (origen, mes)
+            Mem-->>Per: valores imputados + bandera wx_imputed
+            Per->>Dec: percepto con pronóstico imputado
+            Dec->>Act: decisión con bandera de imputación
+        else Excepción: entrada inválida o antelación < 180 min
+            Per->>Act: estado ENTRADA_INVALIDA / VENTANA_INSUFICIENTE
+            Act->>SOA: marcar para revisión manual (sin predicción)
+            SOA-->>Ops: vuelo pendiente de revisión humana
+        end
+    end
+    Env->>SOA: resultado real del vuelo (retraso en minutos)
+    SOA->>Act: receive_outcome(resultado real)
+    Act->>Mem: actualizar estado de la aeronave
+    Act->>Mem: guardar retroalimentación (predicción vs. realidad)
+    opt Retroalimentación acumulada >= 150 muestras
+        Dec->>Dec: retrain() con muestras nuevas (más peso)
+    end

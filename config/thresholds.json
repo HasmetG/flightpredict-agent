@@ -1,0 +1,11 @@
+{
+  "_nota": "Umbrales de aceptacion fijados ANTES de ejecutar las pruebas de la Fase 3. No modificar despues de ver resultados.",
+  "fijado_utc": "2026-10-16T14:40:04Z",
+  "retraso_minutos": 15,
+  "repeticiones": 5,
+  "M1_exactitud_media_min": 0.70,
+  "M2_antelacion_min_minutos": 180,
+  "M2_proporcion_min": 1.0,
+  "M3_recall_media_min": 0.60,
+  "M4_manejo_fallas_min": 1.0
+}
