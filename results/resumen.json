@@ -1,0 +1,27 @@
+{
+  "umbrales": {
+    "_nota": "Umbrales de aceptacion fijados ANTES de ejecutar las pruebas de la Fase 3. No modificar despues de ver resultados.",
+    "fijado_utc": "2026-10-16T14:40:04Z",
+    "retraso_minutos": 15,
+    "repeticiones": 5,
+    "M1_exactitud_media_min": 0.7,
+    "M2_antelacion_min_minutos": 180,
+    "M2_proporcion_min": 1.0,
+    "M3_recall_media_min": 0.6,
+    "M4_manejo_fallas_min": 1.0
+  },
+  "M1_media": 0.7403412813939036,
+  "M1_std": 0.0679928657918337,
+  "M2": 1.0,
+  "M3_media": 0.4595965293144243,
+  "M3_std": 0.160946253021221,
+  "M4": {
+    "M4_S11": 1.0,
+    "M4_S12": 1.0,
+    "M4_S13": 1.0
+  },
+  "excepciones": 0,
+  "falsas_marcas_S11": 0,
+  "total_vuelos": 20984,
+  "total_corridas": 65
+}
